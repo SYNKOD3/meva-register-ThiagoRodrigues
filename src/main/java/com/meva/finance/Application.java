@@ -18,3 +18,5 @@ public class Application {
 		return builder.build();
 	}
 }
+
+// alterado em 06.10.25
