@@ -19,4 +19,4 @@ public class Application {
 	}
 }
 
-// alterado em 06.10.25
+// não alterado
