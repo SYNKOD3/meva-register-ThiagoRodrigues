@@ -69,9 +69,9 @@ public class UserController {
 
     @DeleteMapping("/delete/{cpf}")
     @Transactional
-    public ResponseEntity<Void> deleteUser(@PathVariable String cpf) {
+    public ResponseEntity<Void> userDelete(@PathVariable String cpf) {
         log.info("Nova solicitação de exclusão de usuário recebida!");
-        userService.deleteUser(cpf);
+        userService.userDelete(cpf);
 
         return ResponseEntity.noContent().build(); // Retorna 204 - No Content (Sucesso sem corpo de resposta)
     }

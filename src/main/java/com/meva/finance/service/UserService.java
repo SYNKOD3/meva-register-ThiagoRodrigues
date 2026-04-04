@@ -10,17 +10,12 @@ import com.meva.finance.response.UserListingData;
 import com.meva.finance.response.UserResponseData;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 @RequiredArgsConstructor
@@ -74,7 +69,7 @@ public class UserService {
         return new UserResponseData(user);
     }
 
-    public void deleteUser(String cpf) {
+    public void userDelete(String cpf) {
         userRepository.findById(cpf)
                 .orElseThrow(EntityNotFoundException::new);
         userRepository.deleteById(cpf);
