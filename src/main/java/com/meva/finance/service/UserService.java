@@ -36,7 +36,7 @@ public class UserService {
 
         var userExist = userRepository.findByCpf(data.cpf());
         if (userExist.isPresent()) {
-            throw new EntityExistsException("O usuário " + data.cpf() + " já está cadastrado!");
+            throw new EntityExistsException("O usuário " + data.cpf() + " já está cadastrado no sistema!");
         } else {
             Family family;
 
@@ -56,4 +56,28 @@ public class UserService {
             return userRepository.save(user);
         }
     }
+
+    public Page<UserListingData> listUsers(Pageable pageable) {
+        return userRepository.findAll(pageable).map(UserListingData::new);
+    }
+
+    public UserListingData userDetail(String cpf) {
+        var user = userRepository.findById(cpf)
+                .orElseThrow(EntityNotFoundException::new);
+        return new UserListingData(user);
+    }
+
+    public UserResponseData userUpdate(UserUpdateData data) {
+        var user = userRepository.findById(data.cpf())
+                .orElseThrow(EntityNotFoundException::new);
+        user.updateInformation(data);
+        return new UserResponseData(user);
+    }
+
+    public void deleteUser(String cpf) {
+        userRepository.findById(cpf)
+                .orElseThrow(EntityNotFoundException::new);
+        userRepository.deleteById(cpf);
+    }
+
 }

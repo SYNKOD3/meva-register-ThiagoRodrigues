@@ -1,12 +1,10 @@
 package com.meva.finance.controller;
 
-import com.meva.finance.repository.UserRepository;
 import com.meva.finance.request.UserRegistryData;
 import com.meva.finance.request.UserUpdateData;
 import com.meva.finance.response.UserListingData;
 import com.meva.finance.response.UserResponseData;
 import com.meva.finance.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +30,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
 
     @PostMapping("/register")
     @Transactional
@@ -45,39 +42,36 @@ public class UserController {
         return ResponseEntity.created(uri).body(new UserResponseData(user)); // Retorna 201 OK com os dados do usuário criado
     }
 
-    @GetMapping
-    public ResponseEntity<Page<UserListingData>> list(@PageableDefault(size = 10, sort = {"name"}) Pageable pageable) {
+    @GetMapping("/list")
+    public ResponseEntity<Page<UserListingData>> listUsers(@PageableDefault(size = 10, sort = {"name"}) Pageable pageable) {
         log.info("Nova solicitação de registros recebida!");
-        var page = userRepository.findAll(pageable).map(UserListingData::new);
-        return ResponseEntity.ok(page); // Retorna 200 OK com a página
+        var listUsers = userService.listUsers(pageable);
+
+        return ResponseEntity.ok(listUsers); // Retorna 200 OK com a página
     }
 
     @GetMapping("/{cpf}")
-    public ResponseEntity detail(@PathVariable String cpf) {
+    public ResponseEntity<UserListingData> userDetail(@PathVariable String cpf) {
         log.info("Nova solicitação de registros detalhados recebida!");
-        var user = userRepository.findById(cpf)
-                .orElseThrow(EntityNotFoundException::new);
-        return ResponseEntity.ok(new UserListingData(user)); // Retorna 200 OK com a página
+        var userDetail = userService.userDetail(cpf);
+
+        return ResponseEntity.ok(userDetail); // Retorna 200 OK com a página
     }
 
-    @PutMapping
+    @PutMapping("/update")
     @Transactional
-    public ResponseEntity update(@RequestBody @Valid UserUpdateData data) {
+    public ResponseEntity userUpdate(@RequestBody @Valid UserUpdateData data) {
         log.info("Nova solicitação de atualização de usuário recebida!");
-        var user = userRepository.findById(data.cpf())
-                .orElseThrow(EntityNotFoundException::new);
-        user.updateInformation(data);
+        var userUpdate = userService.userUpdate(data);
 
-        return ResponseEntity.ok(new UserResponseData(user)); // Retorna 200 OK com os dados atualizados
+        return ResponseEntity.ok(userUpdate); // Retorna 200 OK com os dados atualizados
     }
 
-    @DeleteMapping("delete/{cpf}")
+    @DeleteMapping("/delete/{cpf}")
     @Transactional
-    public ResponseEntity exclude(@PathVariable String cpf) {
+    public ResponseEntity<Void> deleteUser(@PathVariable String cpf) {
         log.info("Nova solicitação de exclusão de usuário recebida!");
-        userRepository.findById(cpf)
-                .orElseThrow(EntityNotFoundException::new);
-        userRepository.deleteById(cpf);
+        userService.deleteUser(cpf);
 
         return ResponseEntity.noContent().build(); // Retorna 204 - No Content (Sucesso sem corpo de resposta)
     }
