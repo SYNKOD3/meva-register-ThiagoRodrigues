@@ -33,6 +33,6 @@ public record CreateUserRequest(
 
     @NotNull
     @Valid
-    CreateFamilyRequest createFamilyRequest
+    FamilyRequest familyRequest
     ) {
 }

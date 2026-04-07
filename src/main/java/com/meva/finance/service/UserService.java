@@ -35,13 +35,13 @@ public class UserService {
         } else {
             Family family;
 
-            if (data.createFamilyRequest().idFamily() == 0 && data.createFamilyRequest().description() != null) {
-                log.debug("Regra: Criando nova família '{}'", data.createFamilyRequest().description());
+            if (data.familyRequest().idFamily() == 0 && data.familyRequest().description() != null) {
+                log.debug("Regra: Criando nova família '{}'", data.familyRequest().description());
 
-                family = familyRepository.save(new Family(data.createFamilyRequest()));
-            } else if (data.createFamilyRequest().idFamily() > 0) {
-                log.debug("Regra: Associando à família ID {}", data.createFamilyRequest().idFamily());
-                family = familyRepository.findById(data.createFamilyRequest().idFamily())
+                family = familyRepository.save(new Family(data.familyRequest()));
+            } else if (data.familyRequest().idFamily() > 0) {
+                log.debug("Regra: Associando à família ID {}", data.familyRequest().idFamily());
+                family = familyRepository.findById(data.familyRequest().idFamily())
                         .orElseThrow(() -> new EntityNotFoundException("Família informada não existe!"));
             } else {
                 throw new IllegalArgumentException("Dados da família inválidos para cadastro.");
