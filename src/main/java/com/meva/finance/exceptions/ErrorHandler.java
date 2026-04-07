@@ -1,6 +1,6 @@
 package com.meva.finance.exceptions;
 
-import com.meva.finance.response.ValidationErrorData;
+import com.meva.finance.response.ValidationErrorResponse;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +21,8 @@ public class ErrorHandler {
 
     // 2. Trata erro 400 (Falha nas anotações @NotBlank, @Past, @Pattern, etc.)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<ValidationErrorData>> handle400(MethodArgumentNotValidException ex) {
-        var errors = ex.getFieldErrors().stream().map(ValidationErrorData::new).toList();
+    public ResponseEntity<List<ValidationErrorResponse>> handle400(MethodArgumentNotValidException ex) {
+        var errors = ex.getFieldErrors().stream().map(ValidationErrorResponse::new).toList();
         return ResponseEntity.badRequest().body(errors);
     }
 

@@ -4,10 +4,10 @@ import com.meva.finance.model.Family;
 import com.meva.finance.model.User;
 import com.meva.finance.repository.FamilyRepository;
 import com.meva.finance.repository.UserRepository;
-import com.meva.finance.request.UserRegistryData;
-import com.meva.finance.request.UserUpdateData;
-import com.meva.finance.response.UserListingData;
-import com.meva.finance.response.UserResponseData;
+import com.meva.finance.request.CreateUserRequest;
+import com.meva.finance.request.UpdateUserRequest;
+import com.meva.finance.response.UserListResponse;
+import com.meva.finance.response.UserResponse;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class UserService {
     private final FamilyRepository familyRepository;
 
     @Transactional
-    public User register(UserRegistryData data) {
+    public User register(CreateUserRequest data) {
         log.info("Processando registro para: {}", data.name());
 
         var userExist = userRepository.findByCpf(data.cpf());
@@ -35,13 +35,13 @@ public class UserService {
         } else {
             Family family;
 
-            if (data.familyDTO().idFamily() == 0 && data.familyDTO().description() != null) {
-                log.debug("Regra: Criando nova família '{}'", data.familyDTO().description());
+            if (data.createFamilyRequest().idFamily() == 0 && data.createFamilyRequest().description() != null) {
+                log.debug("Regra: Criando nova família '{}'", data.createFamilyRequest().description());
 
-                family = familyRepository.save(new Family(data.familyDTO()));
-            } else if (data.familyDTO().idFamily() > 0) {
-                log.debug("Regra: Associando à família ID {}", data.familyDTO().idFamily());
-                family = familyRepository.findById(data.familyDTO().idFamily())
+                family = familyRepository.save(new Family(data.createFamilyRequest()));
+            } else if (data.createFamilyRequest().idFamily() > 0) {
+                log.debug("Regra: Associando à família ID {}", data.createFamilyRequest().idFamily());
+                family = familyRepository.findById(data.createFamilyRequest().idFamily())
                         .orElseThrow(() -> new EntityNotFoundException("Família informada não existe!"));
             } else {
                 throw new IllegalArgumentException("Dados da família inválidos para cadastro.");
@@ -52,21 +52,21 @@ public class UserService {
         }
     }
 
-    public Page<UserListingData> listUsers(Pageable pageable) {
-        return userRepository.findAll(pageable).map(UserListingData::new);
+    public Page<UserListResponse> listUsers(Pageable pageable) {
+        return userRepository.findAll(pageable).map(UserListResponse::new);
     }
 
-    public UserListingData userDetail(String cpf) {
+    public UserListResponse userDetail(String cpf) {
         var user = userRepository.findById(cpf)
                 .orElseThrow(EntityNotFoundException::new);
-        return new UserListingData(user);
+        return new UserListResponse(user);
     }
 
-    public UserResponseData userUpdate(UserUpdateData data) {
+    public UserResponse userUpdate(UpdateUserRequest data) {
         var user = userRepository.findById(data.cpf())
                 .orElseThrow(EntityNotFoundException::new);
         user.updateInformation(data);
-        return new UserResponseData(user);
+        return new UserResponse(user);
     }
 
     public void userDelete(String cpf) {

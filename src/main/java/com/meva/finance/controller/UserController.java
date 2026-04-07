@@ -1,9 +1,9 @@
 package com.meva.finance.controller;
 
-import com.meva.finance.request.UserRegistryData;
-import com.meva.finance.request.UserUpdateData;
-import com.meva.finance.response.UserListingData;
-import com.meva.finance.response.UserResponseData;
+import com.meva.finance.request.CreateUserRequest;
+import com.meva.finance.request.UpdateUserRequest;
+import com.meva.finance.response.UserListResponse;
+import com.meva.finance.response.UserResponse;
 import com.meva.finance.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,18 +32,17 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    @Transactional
-    public ResponseEntity register(@RequestBody @Valid UserRegistryData data) {
+    public ResponseEntity register(@RequestBody @Valid CreateUserRequest data) {
         var user = userService.register(data);
 
         var uri = UriComponentsBuilder.fromPath("/users/{cpf}")
                 .buildAndExpand(user.getCpf()).toUri();
 
-        return ResponseEntity.created(uri).body(new UserResponseData(user)); // Retorna 201 OK com os dados do usuário criado
+        return ResponseEntity.created(uri).body(new UserResponse(user)); // Retorna 201 OK com os dados do usuário criado
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Page<UserListingData>> listUsers(@PageableDefault(size = 10, sort = {"name"}) Pageable pageable) {
+    public ResponseEntity<Page<UserListResponse>> listUsers(@PageableDefault(size = 10, sort = {"name"}) Pageable pageable) {
         log.info("Nova solicitação de registros recebida!");
         var listUsers = userService.listUsers(pageable);
 
@@ -51,7 +50,7 @@ public class UserController {
     }
 
     @GetMapping("/{cpf}")
-    public ResponseEntity<UserListingData> userDetail(@PathVariable String cpf) {
+    public ResponseEntity<UserListResponse> userDetail(@PathVariable String cpf) {
         log.info("Nova solicitação de registros detalhados recebida!");
         var userDetail = userService.userDetail(cpf);
 
@@ -60,7 +59,7 @@ public class UserController {
 
     @PutMapping("/update")
     @Transactional
-    public ResponseEntity userUpdate(@RequestBody @Valid UserUpdateData data) {
+    public ResponseEntity userUpdate(@RequestBody @Valid UpdateUserRequest data) {
         log.info("Nova solicitação de atualização de usuário recebida!");
         var userUpdate = userService.userUpdate(data);
 

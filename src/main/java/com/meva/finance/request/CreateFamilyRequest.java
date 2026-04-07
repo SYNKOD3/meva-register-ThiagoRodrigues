@@ -2,7 +2,7 @@ package com.meva.finance.request;
 
 import jakarta.validation.constraints.NotNull;
 
-public record FamilyDTO(
+public record CreateFamilyRequest(
 
         @NotNull
         Long idFamily,

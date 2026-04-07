@@ -2,9 +2,9 @@ package com.meva.finance.response;
 
 import org.springframework.validation.FieldError;
 
-public record ValidationErrorData(String field, String message) {
+public record ValidationErrorResponse(String field, String message) {
 
-    public ValidationErrorData(FieldError error) {
+    public ValidationErrorResponse(FieldError error) {
         this(error.getField(), error.getDefaultMessage());
     }
 }

@@ -1,8 +1,8 @@
 package com.meva.finance.model;
 
 import com.meva.finance.enums.Genre;
-import com.meva.finance.request.UserRegistryData;
-import com.meva.finance.request.UserUpdateData;
+import com.meva.finance.request.CreateUserRequest;
+import com.meva.finance.request.UpdateUserRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -45,7 +45,7 @@ public class User {
     private Family family;
 
 
-    public User(UserRegistryData data, Family family) {
+    public User(CreateUserRequest data, Family family) {
         if (data == null) throw new IllegalArgumentException("Todos os dados precisam estar preenchidos!");
         this.cpf = data.cpf();
         this.name = data.name();
@@ -56,7 +56,7 @@ public class User {
         this.family = family;
     }
 
-    public void updateInformation(@Valid UserUpdateData data){
+    public void updateInformation(@Valid UpdateUserRequest data){
         if(data.name() != null) {
             this.name = data.name();
         }

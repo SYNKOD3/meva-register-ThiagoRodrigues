@@ -6,11 +6,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import java.time.LocalDate;
 
-public record UserRegistryData(
+public record CreateUserRequest(
 
     @NotBlank
     @Pattern(regexp = "\\d{11}", message = "O CPF deve conter exatamente 11 dígitos numéricos")
@@ -34,6 +33,6 @@ public record UserRegistryData(
 
     @NotNull
     @Valid
-    FamilyDTO familyDTO
+    CreateFamilyRequest createFamilyRequest
     ) {
 }

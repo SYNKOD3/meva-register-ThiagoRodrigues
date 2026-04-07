@@ -6,7 +6,7 @@ import com.meva.finance.model.User;
 
 import java.time.LocalDate;
 
-public record UserResponseData(
+public record UserResponse(
 
         String name,
         Genre genre,
@@ -17,7 +17,7 @@ public record UserResponseData(
         String state,
         String city) {
 
-    public UserResponseData(User user) {
+    public UserResponse(User user) {
         this(user.getName(), user.getGenre(), user.getBirth(), user.getState(), user.getCity());
     }
 }
